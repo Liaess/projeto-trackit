@@ -56,7 +56,7 @@ export default function Login(){
 }
 
 const Img = styled.img`
-    width:50%;
+    width:50vw;
     margin-top: 80px;
 `
 const Container = styled.div`
@@ -66,7 +66,7 @@ const Container = styled.div`
 `
 const Input = styled.input`
     height: 45px;
-    width: 70%;
+    width: 70vw;
     font-family: 'Lexend Deca', sans-serif;
     font-size: 20px;
     color: #AFAFAF;
@@ -86,7 +86,7 @@ const Input = styled.input`
 const Button = styled.button`
     cursor: pointer;
     height: 45px;
-    width: 70%;
+    width: 70vw;
     background-color: #52B6FF;
     border: none;
     font-family: 'Lexend Deca', sans-serif;

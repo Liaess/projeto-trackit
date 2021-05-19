@@ -23,7 +23,7 @@ export default function Habitos(){
                 <Input placeholder="nome do hábito" value={inputHabit} onChange={(e)=>setInputHabit(e.target.value)}></Input>
                 <Week>
                     {eachDay.map((d,i)=>
-                        <EachDay key={i}>{d}</EachDay>
+                        <EachDay key={i} id={i}>{d}</EachDay>
                     )}
                 </Week>
                 <Buttons>
@@ -45,15 +45,15 @@ const Container = styled.div`
 `
 
 const Menu = styled.div`
-    width: 100%;
+    width: 100vw;
     display: flex;
     justify-content: space-between;
     font-family: 'Lexend Deca', sans-serif;
+    padding-top: 105px;
     p{
         color: #126BA5;
         font-size: 23px;
         margin-left: 20px;
-        margin-top: 105px;
     }
     button{
         margin-right: 17px;
@@ -64,7 +64,6 @@ const Menu = styled.div`
         width: 35px;
         height: 35px;
         border-radius: 5px;
-        margin-top: 100px;
     }
 `
 

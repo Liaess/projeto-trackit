@@ -15,8 +15,9 @@ const HeaderApp = styled.div`
     position: fixed;
     display: flex;
     align-items: center;
+    z-index: 2;
     justify-content: space-between;
-    width: 100%;
+    width: 100vw;
     height: 70px;
     top: 0;
     background-color: #126BA5;

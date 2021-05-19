@@ -11,9 +11,9 @@ export default function Footer(){
             <Circle>
                 <CircularProgressbar background={true} text="Hoje" />
             </Circle>
-            {/* <Link to={"/historico"}> */}
+            <Link to={"/historico"}>
                 <p>Histórico</p>
-            {/* </Link> */}
+            </Link>
         </Bottom>
     )
 }
@@ -29,7 +29,7 @@ const Bottom = styled.div`
     justify-content: space-between;
     font-size: 18px;
     height: 70px;
-    width: 100%;
+    width: 100vw;
     p{
         color: #52B6FF;
         margin-right: 25px;
