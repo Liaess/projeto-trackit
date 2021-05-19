@@ -4,13 +4,16 @@ import styled from "styled-components"
 import { Link, useHistory } from 'react-router-dom';
 import axios from "axios"
 import Loader from "react-loader-spinner";
+import React, { useContext } from 'react';
+import UserContext from "../Context/UserContext";
+
 
 export default function Login(){
-
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [token, setToken] = useState("");
     const [press, setPress] = useState(false);
+    const {setUser} = useContext(UserContext);
+
     let history = useHistory();
 
     const body ={
@@ -22,7 +25,7 @@ export default function Login(){
         setPress(true);
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", body);
         request.then(response => {
-            setToken(response.data.token);
+            setUser(response.data)
             history.push("/habitos");
         });
         request.catch((error)=> {
@@ -31,18 +34,20 @@ export default function Login(){
             setPress(false);
             if(error.response.status === 401){
                 alert("Usuário e/ou senha inválidos!")
+            } else if (error.response.status === 422) {
+                alert("Email inválido");
             } else{
-                alert("Dados digitados incorretos!");
+                alert("Ocorreu um erro!");
             }
         })
     }
 
     return(
         <Container>
-            <Img src={LogoSite}></Img>
-            <Input type="text" placeholder="email" value={email} onChange={(e)=>setEmail(e.target.value)} disabled={press}></Input>
-            <Input type="password" placeholder="senha" value={password} onChange={(e)=>setPassword(e.target.value)} disabled={press}></Input>
-            <Button onClick={()=>Verify()}> {press === true ? <Loader type="ThreeDots" color="#FFF" height={45} width={60}/> : "Entrar" } </Button>
+            <Img src={LogoSite} alt="logo"></Img>
+            <Input type="text" placeholder="email" value={email} onKeyPress={(e)=>{if(e.code==="Enter"){Verify()}}} onChange={(e)=>setEmail(e.target.value)} disabled={press}></Input>
+            <Input type="password" placeholder="senha" onKeyPress={(e)=>{if(e.code==="Enter"){Verify()}}} value={password} onChange={(e)=>setPassword(e.target.value)} disabled={press}></Input>
+            <Button onClick={Verify}> {press === true ? <Loader type="ThreeDots" color="#FFF" height={45} width={60}/> : "Entrar" } </Button>
             <Link to="/cadastro">
                 <Register>Não tem uma conta? Cadastre-se!</Register>
             </Link>
@@ -73,10 +78,11 @@ const Input = styled.input`
         ::-webkit-input-placeholder{
             color: #DBDBDB;
         }
-        &:disabled{
+        :disabled{
             background-color: #F2F2F2;
         }
 `
+
 const Button = styled.button`
     cursor: pointer;
     height: 45px;

@@ -36,11 +36,11 @@ export default function Register(){
 
     return(
         <Container>
-            <Img src={LogoSite}></Img>
-            <Input type="text" placeholder="email" value={email} onChange={(e)=>setEmail(e.target.value)} disabled={press}></Input>
-            <Input type="password" placeholder="senha" value={password} onChange={(e)=>setPassword(e.target.value)} disabled={press}></Input>
-            <Input type="text" placeholder="nome" value={name} onChange={(e)=>setName(e.target.value)} disabled={press}></Input>
-            <Input type="text" placeholder="foto" value={image} onChange={(e)=>setImage(e.target.value)} disabled={press}></Input>
+            <Img src={LogoSite} alt="logo"></Img>
+            <Input type="text" placeholder="email" value={email} onKeyPress={(e)=>{if(e.code==="Enter"){Register()}}} onChange={(e)=>setEmail(e.target.value)} disabled={press}></Input>
+            <Input type="password" placeholder="senha" value={password} onKeyPress={(e)=>{if(e.code==="Enter"){Register()}}} onChange={(e)=>setPassword(e.target.value)} disabled={press}></Input>
+            <Input type="text" placeholder="nome" value={name} onKeyPress={(e)=>{if(e.code==="Enter"){Register()}}} onChange={(e)=>setName(e.target.value)} disabled={press}></Input>
+            <Input type="text" placeholder="foto" value={image} onKeyPress={(e)=>{if(e.code==="Enter"){Register()}}} onChange={(e)=>setImage(e.target.value)} disabled={press}></Input>
             <Button onClick={()=>Register()}> {press === true ? <Loader type="ThreeDots" color="#FFF" height={45} width={60}/> : "Cadastrar"}</Button>
             <Link to={"/"}>
                 <AlreadyHave>Já tem uma conta? Faça login!</AlreadyHave>
