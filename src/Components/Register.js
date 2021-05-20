@@ -41,7 +41,7 @@ export default function Register(){
             <Input type="password" placeholder="senha" value={password} onKeyPress={(e)=>{if(e.code==="Enter"){Register()}}} onChange={(e)=>setPassword(e.target.value)} disabled={press}></Input>
             <Input type="text" placeholder="nome" value={name} onKeyPress={(e)=>{if(e.code==="Enter"){Register()}}} onChange={(e)=>setName(e.target.value)} disabled={press}></Input>
             <Input type="text" placeholder="foto" value={image} onKeyPress={(e)=>{if(e.code==="Enter"){Register()}}} onChange={(e)=>setImage(e.target.value)} disabled={press}></Input>
-            <Button onClick={()=>Register()}> {press === true ? <Loader type="ThreeDots" color="#FFF" height={45} width={60}/> : "Cadastrar"}</Button>
+            <Button disabled={press} onClick={()=>Register()}> {press === true ? <Loader type="ThreeDots" color="#FFF" height={45} width={60}/> : "Cadastrar"}</Button>
             <Link to={"/"}>
                 <AlreadyHave>Já tem uma conta? Faça login!</AlreadyHave>
             </Link>
@@ -72,7 +72,7 @@ const Input = styled.input`
         ::-webkit-input-placeholder{
             color: #DBDBDB;
         }
-        &:disabled{
+        :disabled{
             background-color: #F2F2F2;
         }
 `
@@ -87,6 +87,9 @@ const Button = styled.button`
     border-radius: 5px;
     color: #FFF;
     font-size: 21px;
+    :disabled{
+        opacity: 0.7;
+    }
 `
 
 const AlreadyHave = styled.p`

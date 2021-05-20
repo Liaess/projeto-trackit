@@ -49,10 +49,10 @@ export default function Today(){
             </Time>
             {!todayHabit || todayHabit.length < 1 ? "" : 
                 todayHabit.map((d,i)=>
-                    <EachHabit>
+                    <EachHabit key={i}>
                         {d.name}
                         <p>Sequência atual: {d.currentSequence} dias</p>
-                        <p>Sequência atual: {d.highestSequence} dias</p>
+                        <p>Seu recorde: {d.highestSequence} dias</p>
                         <button><CheckmarkOutline color={'#FFF'} title={"checkMark"} height="60px" width="60px"/></button>
                     </EachHabit>
                 ).reverse()

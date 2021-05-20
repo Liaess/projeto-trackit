@@ -47,7 +47,7 @@ export default function Login(){
             <Img src={LogoSite} alt="logo"></Img>
             <Input type="text" placeholder="email" value={email} onKeyPress={(e)=>{if(e.code==="Enter"){Verify()}}} onChange={(e)=>setEmail(e.target.value)} disabled={press}></Input>
             <Input type="password" placeholder="senha" onKeyPress={(e)=>{if(e.code==="Enter"){Verify()}}} value={password} onChange={(e)=>setPassword(e.target.value)} disabled={press}></Input>
-            <Button onClick={Verify}> {press === true ? <Loader type="ThreeDots" color="#FFF" height={45} width={60}/> : "Entrar" } </Button>
+            <Button disabled={press} onClick={Verify}> {press === true ? <Loader type="ThreeDots" color="#FFF" height={45} width={60}/> : "Entrar" } </Button>
             <Link to="/cadastro">
                 <Register>Não tem uma conta? Cadastre-se!</Register>
             </Link>
@@ -93,6 +93,9 @@ const Button = styled.button`
     border-radius: 5px;
     color: #FFF;
     font-size: 21px;
+    :disabled{
+        opacity: 0.7;
+    }
 `
 
 const Register = styled.p`
