@@ -20,7 +20,7 @@ export default function History(){
 }
 
 const Message = styled.div`
-    padding-top: 90px;
+    padding-top: 105px;
     top:0;
     left:0;
     font-family: 'Lexend Deca', sans-serif;
@@ -40,5 +40,5 @@ const Message = styled.div`
 const Container = styled.div`
     width: 100vw;
     height: 100vh;
-    background-color: #E5E5E5;
+    background-color: #F2F2F2;
 `

@@ -1,7 +1,7 @@
 import ReactDOM from "react-dom";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import React, { useState } from 'react';
-import "./CSS/reset.css";
+import "./CSS/reset.css"
 import Login from "./Components/Login";
 import Register from "./Components/Register";
 import Habitos from "./Components/Habitos";

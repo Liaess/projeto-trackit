@@ -1,38 +1,100 @@
 import styled from "styled-components";
-// import React, { useContext } from 'react';
-// import UserContext from "../Context/UserContext";
+import React, { useContext, useEffect } from 'react';
+import UserContext from "../Context/UserContext";
 import { useState } from 'react';
 import Header from "./Header"
 import Footer from "./Footer"
+import axios from "axios";
+import Loader from "react-loader-spinner";
 
 
 export default function Habitos(){
-    const [habit, setHabit] = useState(false);
+    const [showHabit, setShowHabit] = useState(false);
     const [inputHabit, setInputHabit] = useState("");
-    // const {user} = useContext(UserContext);
+    const [selectedDays, setSelectedDays] = useState([]);
+    const [createdHabit, setCreatedHabit] = useState(null);
+    const [press, setPress] = useState(false);
+    const {user} = useContext(UserContext);
     const eachDay = ['D','S','T','Q','Q','S','S'];
-    
+
+    const body = {
+        name: inputHabit,
+        days: selectedDays
+    }
+
+    useEffect(()=>{
+        const config ={
+            headers: {
+                "Authorization": `Bearer ${user.token}`
+            }
+        }
+        const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+        promise.then((response)=>{setCreatedHabit(response.data)})
+    },[createdHabit])
+
+    function SelectDay(id){
+        if(selectedDays.includes(id)){
+            const newarray = selectedDays.filter((each)=> each !== id)
+            setSelectedDays([...newarray]);
+        }else{
+            const isSelected = [...selectedDays, id];
+            setSelectedDays(isSelected);
+        }
+    }
+
+    function SaveHabits(){
+        if(inputHabit.length === 0){
+            alert("O nome do hábito não pode ser vázio!")
+            return
+        }
+        if(selectedDays.length === 0){
+            alert("Selecione pelo menos um dia da semana!");
+            return
+        }
+        setPress(true)
+        const config ={
+            headers: {
+                "Authorization": `Bearer ${user.token}`
+            }
+        }
+
+        const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
+        request.then(()=>{setPress(false);setShowHabit(false);setInputHabit("");setSelectedDays([])})
+        request.catch(()=>{console.log("Falhou!");setInputHabit("");setPress(false);setSelectedDays([])})
+    }
+
     return(
         <Container>
             <Header />            
             <Menu>
                 <p>Meus hábitos</p>
-                <button onClick={()=>setHabit(true)}>+</button>
+                <button onClick={()=>setShowHabit(true)}>+</button>
             </Menu>
-            <CreateHabit display = {habit}>
-                <Input placeholder="nome do hábito" value={inputHabit} onChange={(e)=>setInputHabit(e.target.value)}></Input>
+            <CreateHabit show = {showHabit}>
+                <Input disabled={press} placeholder="nome do hábito" value={inputHabit} onChange={(e)=>setInputHabit(e.target.value)} onKeyPress={(e)=>{if(e.code==="Enter"){SaveHabits()}}}></Input>
                 <Week>
                     {eachDay.map((d,i)=>
-                        <EachDay key={i} id={i}>{d}</EachDay>
+                        <EachDay disabled={press} className={selectedDays.includes(i) ? "selected" : ""} onClick={()=>{SelectDay(i)}} key={i} id={i}>{d}</EachDay>
                     )}
                 </Week>
                 <Buttons>
-                    <Cancel onClick={()=>{setHabit(false);setInputHabit("")}}>Cancelar</Cancel>
-                    <Save>Salvar</Save>
+                    <Cancel onClick={()=>{setShowHabit(false);setInputHabit(""); setSelectedDays([])}}>Cancelar</Cancel>
+                    <Save onClick={()=>SaveHabits()} >{press === true ? <Loader type="ThreeDots" color="#FFF" height={35} width={50}/> : "Salvar" }</Save>
                 </Buttons>
             </CreateHabit>
             <Habits>
-                <p>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</p>
+                {!createdHabit || createdHabit.length < 1 ? <h1>Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!</h1> : 
+                createdHabit.map((h,i)=>
+                    <EachHabit key={i}> 
+                        <p>{h.name}</p>
+                        <EachDayHabit>
+                        {eachDay.map((d,j)=>
+                            <EachDay key={j} className={h.days.includes(j) ? "selected" : ""} >{d}</EachDay>
+                        )}
+                        </EachDayHabit>
+                    </EachHabit>
+                ).reverse()
+                }
             </Habits>
             <Footer />
         </Container>
@@ -41,7 +103,7 @@ export default function Habitos(){
 
 const Container = styled.div`
     background-color: #F2F2F2;
-    height: 100vh;
+    min-height: 100vh;
 `
 
 const Menu = styled.div`
@@ -72,7 +134,7 @@ const CreateHabit = styled.div`
     width: 340px;
     height: 180px;
     background-color: #FFF;
-    display: ${props => (props.display === true ? "flex" : "none")};
+    display: ${props => (props.show === true ? "flex" : "none")};
     flex-direction: column;
     justify-content: center;
     margin: 15px auto 0px auto;
@@ -116,16 +178,27 @@ const EachDay = styled.div`
     align-items: center;
     font-size: 20px;
     margin: 0px 2px;
+    &.selected{
+        background-color: #CFCFCF;
+        color: #fff;
+    }
 `
 
 const Habits = styled.div`
     margin-top: 30px;
     font-family: 'Lexend Deca', sans-serif;
-    p{
+    padding-bottom: 100px;
+    h1{
         color: #666;
         font-size: 18px;
         margin: 0px 20px;
     }
+    p{
+        color: #666;
+        font-size: 20px;
+        padding: 10px;
+    }
+
 `
 
 const Buttons = styled.div`
@@ -156,4 +229,17 @@ const Save = styled.button`
     border-radius: 5px;
     font-family: 'Lexend Deca', sans-serif;
     color: #fff;
+`
+
+const EachHabit = styled.div`
+    width: 340px;
+    background-color: #fff;
+    height: 91px;
+    border-radius: 5px;
+    margin: 10px auto;
+`
+
+const EachDayHabit = styled.div`
+    display: flex;
+    padding-left: 8px;
 `
