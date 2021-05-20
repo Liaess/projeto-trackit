@@ -6,6 +6,8 @@ import Header from "./Header"
 import Footer from "./Footer"
 import axios from "axios";
 import Loader from "react-loader-spinner";
+import { TrashOutline } from 'react-ionicons'
+
 
 
 export default function Habitos(){
@@ -63,6 +65,19 @@ export default function Habitos(){
         request.catch(()=>{console.log("Falhou!");setInputHabit("");setPress(false);setSelectedDays([])})
     }
 
+    function Delete(i){
+        const config ={
+            headers: {
+                "Authorization": `Bearer ${user.token}`
+            }
+        };
+
+        const ask = window.confirm("Deseja deletar esse hábito?");
+        if(ask){
+            axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${i}`,config)
+        }
+    }
+
     return(
         <Container>
             <Header />            
@@ -78,7 +93,7 @@ export default function Habitos(){
                     )}
                 </Week>
                 <Buttons>
-                    <Cancel onClick={()=>{setShowHabit(false);setInputHabit(""); setSelectedDays([])}}>Cancelar</Cancel>
+                    <Cancel onClick={()=>{setShowHabit(false)}}>Cancelar</Cancel>
                     <Save onClick={()=>SaveHabits()} >{press === true ? <Loader type="ThreeDots" color="#FFF" height={35} width={50}/> : "Salvar" }</Save>
                 </Buttons>
             </CreateHabit>
@@ -92,14 +107,17 @@ export default function Habitos(){
                             <EachDay key={j} className={h.days.includes(j) ? "selected" : ""} >{d}</EachDay>
                         )}
                         </EachDayHabit>
+                        <TrashOutline color={'#424242'} title={"trashcan"} height="15px" width="25px" cssClasses={"position"} onClick={()=>Delete(h.id)} />
                     </EachHabit>
-                ).reverse()
-                }
+                ).reverse()}
             </Habits>
             <Footer />
         </Container>
     )
 }
+
+
+
 
 const Container = styled.div`
     background-color: #F2F2F2;
@@ -155,6 +173,9 @@ const Input = styled.input`
     font-family: 'Lexend Deca', sans-serif;
         ::-webkit-input-placeholder{
             color: #DBDBDB;
+        }
+        :disabled{
+            background-color: #F2F2F2;
         }
 
 `
@@ -237,6 +258,12 @@ const EachHabit = styled.div`
     height: 91px;
     border-radius: 5px;
     margin: 10px auto;
+    position: relative;
+    .position{
+        position: absolute;
+        right: 1px;
+        top: 6px;
+    }
 `
 
 const EachDayHabit = styled.div`
