@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import "./CSS/reset.css"
 import Login from "./Components/Login";
 import Register from "./Components/Register";
-import Habitos from "./Components/Habitos";
+import AllHabits from "./Components/AllHabits";
 import History from "./Components/History";
+import Today from "./Components/Today";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import UserContext from "./Context/UserContext";
 import 'react-circular-progressbar/dist/styles.css';
@@ -24,7 +25,10 @@ function App(){
                         <Register />
                     </Route>
                     <Route path="/habitos" exact>
-                        <Habitos />
+                        <AllHabits />
+                    </Route>
+                    <Route path="/hoje" exact>
+                        <Today />
                     </Route>
                     <Route path="/historico" exact>
                         <History />

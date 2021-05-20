@@ -26,7 +26,7 @@ export default function Login(){
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", body);
         request.then(response => {
             setUser({id: response.data.id, name: response.data.name, token: response.data.token, image: response.data.image})
-            history.push("/habitos");
+            history.push("/hoje");
         });
         request.catch((error)=> {
             setEmail("");

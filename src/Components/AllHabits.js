@@ -7,10 +7,10 @@ import Footer from "./Footer"
 import axios from "axios";
 import Loader from "react-loader-spinner";
 import { TrashOutline } from 'react-ionicons'
+import loading from "../loading.gif"
 
 
-
-export default function Habitos(){
+export default function AllHabits(){
     const [showHabit, setShowHabit] = useState(false);
     const [inputHabit, setInputHabit] = useState("");
     const [selectedDays, setSelectedDays] = useState([]);
@@ -78,6 +78,18 @@ export default function Habitos(){
         }
     }
 
+    if(!createdHabit || createdHabit.length < 1){
+        return(
+            <>
+                <Header />
+                <ContainerLoading>
+                    <img className="loading" src={loading} alt="loading"></img>
+                </ContainerLoading>
+                <Footer />
+            </>
+        )
+    }
+
     return(
         <Container>
             <Header />            
@@ -117,7 +129,16 @@ export default function Habitos(){
 }
 
 
-
+const ContainerLoading = styled.div`
+    position: relative;
+    background-color: #F2F2F2;
+    min-height: 100vh;
+    img{
+        position: absolute;
+        top: 233px;
+        right: 88px;
+    }
+`
 
 const Container = styled.div`
     background-color: #F2F2F2;
