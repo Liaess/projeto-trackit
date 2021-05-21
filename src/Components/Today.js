@@ -2,6 +2,7 @@ import styled from "styled-components";
 import Header from "./Header"
 import Footer from "./Footer"
 import UserContext from "../Context/UserContext";
+import ProgressContext from "../Context/ProgressContext"
 import { useContext, useEffect } from "react";
 import dayjs from "dayjs";
 import { useState } from "react"
@@ -16,6 +17,7 @@ export default function Today(){
     dayjs.extend(calendar);
     const [todayHabit, setTodayHabit] = useState([]);
     const {user} = useContext(UserContext);
+    const { progress, setProgress } = useContext(ProgressContext);
 
 
     useEffect(()=>{
@@ -28,14 +30,6 @@ export default function Today(){
         const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config)
         promise.then((response)=>{setTodayHabit(response.data)})
     }, [])
-
-    if(todayHabit.length === 0){
-        return(
-            <>
-                <Loading />
-            </>
-        )
-    }
 
     function UpdateHabits(){
         const config = {
@@ -60,7 +54,7 @@ export default function Today(){
             }
 
             const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${d.id}/check`, {} , config)
-            promise.then(()=> {UpdateHabits()})
+            promise.then(()=> {UpdateHabits();setProgress(todayHabit.filter((e)=>e.done === true).length/todayHabit.length);            })
             
         }else{
             const config ={
@@ -75,20 +69,31 @@ export default function Today(){
         }
     }
 
+    setProgress(todayHabit.filter((e)=>e.done === true).length/todayHabit.length);
+
+
+    if(todayHabit.length === 0){
+        return(
+            <>
+                <Loading />
+            </>
+        )
+    }
+
     return(
         <Container>
             <Header />
             <Time>
                 {dayjs().locale("pt").format("dddd").replace("-feira", "")}, {dayjs().calendar(dayjs("2019-09-21"),{sameElse: "DD/MM"})}
-                <p>Nenhum hábito concluído ainda</p>
+                <p className={progress > 0 ? "green-color": ""}> {`${progress === 0?"Nenhum hábito concluído ainda": Math.round(progress*100)+ '% dos hábitos concluídos hoje'}`} </p>
             </Time>
             <HabitContainer>
                 {todayHabit.map((d,i)=>
                     <EachHabit onClick={(e)=>ChangeDone(e,d)} key={i}>
                         {d.name}
-                        <p>Sequência atual: {d.currentSequence} dias</p>
-                        <p>Seu recorde: {d.highestSequence} dias</p>
-                        <Check  done={d.done}><CheckmarkOutline cssClasses={"position"} color={'#FFF'} title={"checkMark"} height="60px" width="60px"/></Check>
+                        <p>Sequência atual: <span className={d.currentSequence === d.highestSequence && d.highestSequence !==0 ? "selected" : ""}>{d.currentSequence} dias</span></p>
+                        <p>Seu recorde: <span className={d.currentSequence === d.highestSequence && d.highestSequence !==0 ? "selected" : ""}>{d.highestSequence} dias</span></p>
+                        <Check done={d.done}><CheckmarkOutline cssClasses={"position"} color={'#FFF'} title={"checkMark"} height="60px" width="60px"/></Check>
                     </EachHabit>
                 ).reverse()}
             </HabitContainer>
@@ -115,6 +120,9 @@ const Time = styled.div`
         font-size: 18px;
         padding-top: 5px;
     }
+    .green-color{
+        color: #8FC549
+    }
 `
 const EachHabit =styled.div`
     display: flex;
@@ -132,9 +140,13 @@ const EachHabit =styled.div`
     p{
         font-size: 13px;
         padding: 2px;
+        
     }
     p:first-child{
         padding-top: 15px;
+    }
+    .selected{
+        color: #8fc549;
     }
 
 `
