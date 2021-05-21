@@ -9,13 +9,14 @@ import calendar from "dayjs/plugin/calendar";
 import "dayjs/locale/pt";
 import { CheckmarkOutline } from 'react-ionicons'
 import axios from "axios";
-import loading from "../loading.gif"
+import Loading from "./Loading"
 
 
 export default function Today(){
     dayjs.extend(calendar);
     const [todayHabit, setTodayHabit] = useState([]);
     const {user} = useContext(UserContext);
+
 
     useEffect(()=>{
         const config = {
@@ -25,19 +26,53 @@ export default function Today(){
         }
 
         const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config)
-        promise.then((response)=>{setTodayHabit(response.data); console.log(response.data)})
+        promise.then((response)=>{setTodayHabit(response.data)})
     }, [])
 
     if(todayHabit.length === 0){
         return(
             <>
-                <Header />
-                <ContainerLoading>
-                    <img className="loading" src={loading} alt="loading"></img>
-                </ContainerLoading>
-                <Footer />
+                <Loading />
             </>
         )
+    }
+
+    function UpdateHabits(){
+        const config = {
+            headers:{
+                "Authorization": `Bearer ${user.token}`
+            }
+        }
+
+        const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config)
+        promise.then((response)=>{setTodayHabit(response.data)})
+
+    }
+    
+    function ChangeDone(e,d){
+        e.stopPropagation();
+
+        if(d.done === false){
+            const config ={
+                headers: {
+                    "Authorization": `Bearer ${user.token}`
+                }
+            }
+
+            const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${d.id}/check`, {} , config)
+            promise.then(()=> {UpdateHabits()})
+            
+        }else{
+            const config ={
+                headers: {
+                    "Authorization": `Bearer ${user.token}`
+                }
+            }           
+            
+            const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${d.id}/uncheck`, {} , config)
+            promise.then(()=> {UpdateHabits()})
+        
+        }
     }
 
     return(
@@ -47,31 +82,20 @@ export default function Today(){
                 {dayjs().locale("pt").format("dddd").replace("-feira", "")}, {dayjs().calendar(dayjs("2019-09-21"),{sameElse: "DD/MM"})}
                 <p>Nenhum hábito concluído ainda</p>
             </Time>
-            {!todayHabit || todayHabit.length < 1 ? "" : 
-                todayHabit.map((d,i)=>
-                    <EachHabit key={i}>
+                {todayHabit.map((d,i)=>
+                    <EachHabit onClick={(e)=>ChangeDone(e,d)} key={i}>
                         {d.name}
                         <p>Sequência atual: {d.currentSequence} dias</p>
                         <p>Seu recorde: {d.highestSequence} dias</p>
-                        <button><CheckmarkOutline color={'#FFF'} title={"checkMark"} height="60px" width="60px"/></button>
+                        <Check  done={d.done}><CheckmarkOutline cssClasses={"position"} color={'#FFF'} title={"checkMark"} height="60px" width="60px"/></Check>
                     </EachHabit>
-                ).reverse()
-            }
+                ).reverse()}
             <Footer />
         </Container>
     )
 }
 
-const ContainerLoading = styled.div`
-    position: relative;
-    background-color: #F2F2F2;
-    min-height: 100vh;
-    img{
-        position: absolute;
-        top: 233px;
-        right: 88px;
-    }
-`
+
 
 const Container = styled.div`
     background-color: #F2F2F2;
@@ -110,15 +134,20 @@ const EachHabit =styled.div`
     p:first-child{
         padding-top: 15px;
     }
-    button{
-        position: absolute;
-        width: 69px;
-        height: 69px;
-        right: 15px;
-        top: 13px;
-        border: none;
-        border-radius: 5px;
-        background-color: #EBEBEB;
-    }
 
+`
+const Check = styled.div`
+    position: absolute;
+    width: 69px;
+    height: 69px;
+    right: 15px;
+    top: 13px;
+    border: none;
+    border-radius: 5px;
+    background-color: ${props => (props.done === true ? "#8FC549" : "#EBEBEB")};
+    .position{
+        position: absolute;
+        right: 4px;
+        top: 5px;
+    }
 `

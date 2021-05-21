@@ -7,7 +7,7 @@ import Footer from "./Footer"
 import axios from "axios";
 import Loader from "react-loader-spinner";
 import { TrashOutline } from 'react-ionicons'
-import loading from "../loading.gif"
+import Loading from "./Loading"
 
 
 export default function AllHabits(){
@@ -32,8 +32,18 @@ export default function AllHabits(){
         }
         const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
         promise.then((response)=>{setCreatedHabit(response.data)})
-    },[createdHabit])
+    },[])
 
+    function GetHabits(){
+        const config ={
+            headers: {
+                "Authorization": `Bearer ${user.token}`
+            }
+        }
+        const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
+        promise.then((response)=>{setCreatedHabit(response.data)})
+    }
+    
     function SelectDay(id){
         if(selectedDays.includes(id)){
             const newarray = selectedDays.filter((each)=> each !== id)
@@ -61,8 +71,8 @@ export default function AllHabits(){
         }
 
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", body, config);
-        request.then(()=>{setPress(false);setShowHabit(false);setInputHabit("");setSelectedDays([])})
-        request.catch(()=>{console.log("Falhou!");setInputHabit("");setPress(false);setSelectedDays([])})
+        request.then(()=>{GetHabits();setPress(false);setShowHabit(false);setInputHabit("");setSelectedDays([])})
+        request.catch(()=>{setInputHabit("");setPress(false);setSelectedDays([])})
     }
 
     function Delete(i){
@@ -74,18 +84,15 @@ export default function AllHabits(){
 
         const ask = window.confirm("Deseja deletar esse hábito?");
         if(ask){
-            axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${i}`,config)
+            const deleteHabit = axios.delete(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${i}`,config)
+            deleteHabit.then(()=>GetHabits());
         }
     }
 
     if(!createdHabit || createdHabit.length < 1){
         return(
             <>
-                <Header />
-                <ContainerLoading>
-                    <img className="loading" src={loading} alt="loading"></img>
-                </ContainerLoading>
-                <Footer />
+                <Loading />
             </>
         )
     }
@@ -106,7 +113,7 @@ export default function AllHabits(){
                 </Week>
                 <Buttons>
                     <Cancel onClick={()=>{setShowHabit(false)}}>Cancelar</Cancel>
-                    <Save onClick={()=>SaveHabits()} >{press === true ? <Loader type="ThreeDots" color="#FFF" height={35} width={50}/> : "Salvar" }</Save>
+                    <Save onClick={()=>{SaveHabits()}} >{press === true ? <Loader type="ThreeDots" color="#FFF" height={35} width={50}/> : "Salvar" }</Save>
                 </Buttons>
             </CreateHabit>
             <Habits>
@@ -127,18 +134,6 @@ export default function AllHabits(){
         </Container>
     )
 }
-
-
-const ContainerLoading = styled.div`
-    position: relative;
-    background-color: #F2F2F2;
-    min-height: 100vh;
-    img{
-        position: absolute;
-        top: 233px;
-        right: 88px;
-    }
-`
 
 const Container = styled.div`
     background-color: #F2F2F2;
