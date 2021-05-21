@@ -82,6 +82,7 @@ export default function Today(){
                 {dayjs().locale("pt").format("dddd").replace("-feira", "")}, {dayjs().calendar(dayjs("2019-09-21"),{sameElse: "DD/MM"})}
                 <p>Nenhum hábito concluído ainda</p>
             </Time>
+            <HabitContainer>
                 {todayHabit.map((d,i)=>
                     <EachHabit onClick={(e)=>ChangeDone(e,d)} key={i}>
                         {d.name}
@@ -90,6 +91,7 @@ export default function Today(){
                         <Check  done={d.done}><CheckmarkOutline cssClasses={"position"} color={'#FFF'} title={"checkMark"} height="60px" width="60px"/></Check>
                     </EachHabit>
                 ).reverse()}
+            </HabitContainer>
             <Footer />
         </Container>
     )
@@ -150,4 +152,8 @@ const Check = styled.div`
         right: 4px;
         top: 5px;
     }
+`
+
+const HabitContainer = styled.div`
+    padding-bottom: 115px;
 `
