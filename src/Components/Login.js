@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import LogoSite from "../Logo.png"
 import styled from "styled-components"
 import { Link, useHistory } from 'react-router-dom';
@@ -19,12 +19,22 @@ export default function Login(){
     const body ={
         email,
         password
-    } 
+    }
+    useEffect(()=>{
+        if(localStorage.length > 0){
+           body.email = JSON.parse(localStorage.userdata).email;
+           body.password = JSON.parse(localStorage.userdata).password;
+           Verify()
+        }
+    },[])
 
     function Verify(){
         setPress(true);
         const request = axios.post("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login", body);
         request.then(response => {
+            if(localStorage.length === 0){
+                localStorage.setItem("userdata", JSON.stringify(body));
+            }
             setUser({id: response.data.id, name: response.data.name, token: response.data.token, image: response.data.image})
             history.push("/hoje");
         });

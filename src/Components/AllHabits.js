@@ -19,6 +19,7 @@ export default function AllHabits(){
     const {user} = useContext(UserContext);
     const eachDay = ['D','S','T','Q','Q','S','S'];
 
+
     const body = {
         name: inputHabit,
         days: selectedDays

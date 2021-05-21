@@ -54,7 +54,7 @@ export default function Today(){
             }
 
             const promise = axios.post(`https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${d.id}/check`, {} , config)
-            promise.then(()=> {UpdateHabits();setProgress(todayHabit.filter((e)=>e.done === true).length/todayHabit.length);            })
+            promise.then(()=> {UpdateHabits();setProgress(todayHabit.filter((e)=>e.done === true).length/todayHabit.length);})
             
         }else{
             const config ={
@@ -148,7 +148,6 @@ const EachHabit =styled.div`
     .selected{
         color: #8fc549;
     }
-
 `
 const Check = styled.div`
     position: absolute;
