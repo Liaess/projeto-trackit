@@ -16,6 +16,7 @@ import Loading from "./Loading"
 export default function Today(){
     dayjs.extend(calendar);
     const [todayHabit, setTodayHabit] = useState([]);
+    const [useLoading, setUseLoading] = useState(true);
     const {user} = useContext(UserContext);
     const { progress, setProgress } = useContext(ProgressContext);
 
@@ -28,7 +29,7 @@ export default function Today(){
         }
 
         const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config)
-        promise.then((response)=>{setTodayHabit(response.data)})
+        promise.then((response)=>{setTodayHabit(response.data);setUseLoading(false)})
     }, [])
 
     function UpdateHabits(){
@@ -71,21 +72,14 @@ export default function Today(){
 
     setProgress(todayHabit.filter((e)=>e.done === true).length/todayHabit.length);
 
-
-    if(todayHabit.length === 0){
-        return(
-            <>
-                <Loading />
-            </>
-        )
-    }
+    if(useLoading) return <Loading />
 
     return(
         <Container>
             <Header />
             <Time>
                 {dayjs().locale("pt").format("dddd").replace("-feira", "")}, {dayjs().calendar(dayjs("2019-09-21"),{sameElse: "DD/MM"})}
-                <p className={progress > 0 ? "green-color": ""}> {`${progress === 0?"Nenhum hábito concluído ainda": Math.round(progress*100)+ '% dos hábitos concluídos hoje'}`} </p>
+                <p className={progress > 0 ? "green-color": ""}> {`${!progress ?"Nenhum hábito concluído ainda": Math.round(progress*100)+ '% dos hábitos concluídos hoje'}`} </p>
             </Time>
             <HabitContainer>
                 {todayHabit.map((d,i)=>

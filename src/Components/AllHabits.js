@@ -90,13 +90,7 @@ export default function AllHabits(){
         }
     }
 
-    if(!createdHabit || createdHabit.length < 1){
-        return(
-            <>
-                <Loading />
-            </>
-        )
-    }
+    if(!createdHabit) return <Loading />
 
     return(
         <Container>

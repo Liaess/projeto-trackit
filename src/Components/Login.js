@@ -20,6 +20,7 @@ export default function Login(){
         email,
         password
     }
+
     useEffect(()=>{
         if(localStorage.length > 0){
            body.email = JSON.parse(localStorage.userdata).email;
@@ -35,7 +36,7 @@ export default function Login(){
             if(localStorage.length === 0){
                 localStorage.setItem("userdata", JSON.stringify(body));
             }
-            setUser({id: response.data.id, name: response.data.name, token: response.data.token, image: response.data.image})
+            setUser({id: response.data.id, name: response.data.name, token: response.data.token, image: response.data.image});
             history.push("/hoje");
         });
         request.catch((error)=> {
