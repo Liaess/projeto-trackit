@@ -33,7 +33,7 @@ export default function AllHabits(){
         }
         const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits", config);
         promise.then((response)=>{setCreatedHabit(response.data)})
-    },[])
+    },[]) //eslint-disable-line
 
     function GetHabits(){
         const config ={

@@ -21,7 +21,7 @@ export default function History(){
         }
         const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily", config)
         promise.then((response)=> {console.log(response.data);setUseLoading(false)})
-    },[])
+    },[]) //eslint-disable-line
 
     if(useLoading) return <Loading />
 

@@ -30,7 +30,7 @@ export default function Today(){
 
         const promise = axios.get("https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today", config)
         promise.then((response)=>{setTodayHabit(response.data);setUseLoading(false)})
-    }, [])
+    }, []) //eslint-disable-line
 
     function UpdateHabits(){
         const config = {

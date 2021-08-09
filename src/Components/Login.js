@@ -22,12 +22,12 @@ export default function Login(){
     }
 
     useEffect(()=>{
-        if(localStorage.length > 0){
+        if(localStorage.length){
            body.email = JSON.parse(localStorage.userdata).email;
            body.password = JSON.parse(localStorage.userdata).password;
            Verify()
         }
-    },[])
+    },[]) //eslint-disable-line
 
     function Verify(){
         setPress(true);
