@@ -15,7 +15,7 @@ export default function Footer(){
             <Link to={"/hoje"}>
                 <Circle>
                 <CircularProgressbar
-                    value={progress*100}
+                    value={isNaN(progress)? 0: progress*100}
                     text={"Hoje"}
                     minValue={0}
                     background
